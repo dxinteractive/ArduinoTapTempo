@@ -1,0 +1,27 @@
+#######################################
+# Syntax Coloring Map
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+ArduinoTapTempo	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+isPressed	KEYWORD2
+isPressedBefore	KEYWORD2
+isPressedAfter	KEYWORD2
+onPress	KEYWORD2
+onPressAfter	KEYWORD2
+onPressAndAfter	KEYWORD2
+onPressAfter	KEYWORD2
+onPressAndAfter	KEYWORD2
+onRelease	KEYWORD2
+onReleaseBefore	KEYWORD2
+onReleaseAfter	KEYWORD2
+getPressDuration	KEYWORD2
+getLastReleasePressDuration	KEYWORD2
+update	KEYWORD2
