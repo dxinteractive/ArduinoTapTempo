@@ -26,30 +26,147 @@
 #include <Arduino.h>
 #include "ArduinoTapTempo.h"
 
-ArduinoTapTempo::ArduinoTapTempo(int millisUntilChainReset, int totalTapValues)
-{
-  this->millisUntilChainReset = millisUntilChainReset;
-  this->totalTapValues = totalTapValues;
-}
-
 void ArduinoTapTempo::setSkippedTapThresholdLow(float threshold)
 {
   if(threshold > 1.0 && threshold < 2.0)
-  {
     skippedTapThresholdLow = threshold;
-  }
 }
 
 void ArduinoTapTempo::setSkippedTapThresholdHigh(float threshold)
 {
   if(threshold > 2.0 && threshold < 4.0)
-  {
     skippedTapThresholdHigh = threshold;
+}
+
+float ArduinoTapTempo::getBPM()
+{
+  return 60000 / beatLengthMS;
+}
+
+bool ArduinoTapTempo::onBeat()
+{
+  return fmod((float)millisSinceReset, (float)beatLengthMS) < fmod((float)millisSinceResetOld, (float)beatLengthMS);
+}
+
+bool ArduinoTapTempo::isChainActive()
+{
+  return isChainActive(millis());
+}
+
+bool ArduinoTapTempo::isChainActive(unsigned long ms)
+{
+  return lastTapMS + millisUntilChainReset > ms && lastTapMS + (beatLengthMS * beatsUntilChainReset) > ms;
+}
+
+float ArduinoTapTempo::beatProgress()
+{
+  return fmod((float)millisSinceReset / (float)beatLengthMS, 1.0);
+}
+
+void ArduinoTapTempo::update(bool buttonDown)
+{
+  unsigned long ms = millis();
+
+  // if a tap has occured...
+  if(buttonDown && !buttonDownOld)
+    tap(ms);
+
+  buttonDownOld = buttonDown;
+  millisSinceResetOld = millisSinceReset;
+  millisSinceReset = ms - lastResetMS;
+}
+
+void ArduinoTapTempo::tap(unsigned long ms)
+{
+  // start a new tap chain if last tap was over an amount of beats ago
+  if(!isChainActive(ms))
+    resetTapChain(ms);
+
+  addTapToChain(ms);
+}
+
+void ArduinoTapTempo::addTapToChain(unsigned long ms)
+{
+  tapsInChain++;
+  if(tapsInChain == 1) {
+    lastTapMS = ms;
+    return;
+  }
+
+  // get time since last tap
+  unsigned long duration = ms - lastTapMS;
+  lastTapMS = ms;
+  
+  // detect if last duration was approximately twice the length of the current beat length
+  // and if so then we've simply missed a beat and can halve the duration to get the real beat length
+  if(tapsInChain > 2
+     && !lastTapSkipped
+     && duration > beatLengthMS * skippedTapThresholdLow
+     && duration < beatLengthMS * skippedTapThresholdHigh)
+  {
+    duration = duration >> 1;
+    lastTapSkipped = true;
+  }
+  else
+  {
+    lastTapSkipped = false;
+  }
+  
+  tapDurations[tapDurationIndex] = duration;
+  tapDurationIndex++;
+  if(tapDurationIndex == totalTapValues) {
+    tapDurationIndex = 0;
+  }
+  
+  beatLengthMS = getAverageTapDuration();
+}
+
+void ArduinoTapTempo::resetTapChain()
+{
+  resetTapChain(millis());
+}
+
+void ArduinoTapTempo::resetTapChain(unsigned long ms)
+{
+  tapsInChain = 0;
+  tapDurationIndex = 0;
+  lastResetMS = ms;
+  for(int i = 0; i < totalTapValues; i++) {
+    tapDurations[i] = 0;
   }
 }
 
-
-void ArduinoTapTempo::update(boolean buttonDown)
+unsigned long ArduinoTapTempo::getAverageTapDuration()
 {
+  int amount = tapsInChain - 1;
+  if(amount > totalTapValues)
+    amount = totalTapValues;
+  
+  int runningTotal = 0;
+  for(int i = 0; i < amount; i++) {
+    runningTotal += tapDurations[i];
+  }
+  return runningTotal / amount;
+}
 
+void ArduinoTapTempo::setBeatsUntilChainReset(int beats)
+{
+  if(beats < 2)
+  {
+    beats = 2;
+  }
+  beatsUntilChainReset = beats;
+}
+
+void ArduinoTapTempo::setTotalTapValues(int total)
+{
+  if(total < 2)
+  {
+    total = 2;
+  }
+  else if(total > ArduinoTapTempo::MAX_TAP_VALUES)
+  {
+    total = ArduinoTapTempo::MAX_TAP_VALUES;
+  }
+  totalTapValues = total;
 }

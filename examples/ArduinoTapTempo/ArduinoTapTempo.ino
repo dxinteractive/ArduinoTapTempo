@@ -19,14 +19,22 @@ void setup() {
 void loop() {
   // get the state of the button
   boolean buttonDown = digitalRead(BUTTON_PIN) == LOW;
-  if(buttonDown) {
-    Serial.println("Button down");
-  } else {
-    Serial.println("Button up");
-  }
   
   // update the ArduinoTapTempo object
   tapTempo.update(buttonDown);
 
-  delay(10);
+  Serial.print("len:");
+  Serial.print(tapTempo.getBeatLength());
+  Serial.print(",\tbpm: ");
+  Serial.print(tapTempo.getBPM());
+  Serial.print(",\tchain active: ");
+  Serial.print(tapTempo.isChainActive() ? "yes" : "no ");
+  Serial.print(",\tlasttap: ");
+  Serial.print(tapTempo.getLastTapTime());
+  Serial.print(",\tprogress: ");
+  Serial.print(tapTempo.beatProgress());
+  Serial.print(",\tbeat: ");
+  Serial.println(tapTempo.onBeat() ? "beat" : "    ");
+  
+  delay(1);
 }
