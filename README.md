@@ -8,7 +8,7 @@ How do you use it? Just tap a button in time with some music. This'll work out t
 
 ## How to install
 
-In the Arduino IDE, go to Sketch > Include libraries > Manage libraries, and search for ResponsiveAnalogInput. You can also just use the files directly from the src folder.
+In the Arduino IDE, go to Sketch > Include libraries > Manage libraries, and search for ArduinoTapTempo. You can also just use the files directly from the src folder.
 
 Look at the example in the examples folder for an idea on how to use it in your own projects. The source files are also heavily commented, so check those out if you want fine control of the library's behaviour.
 
