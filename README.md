@@ -74,7 +74,7 @@ unsigned long getLastTapTime();
 Returns the time of the last tap in milliseconds since the program started.
 
 
-## Other methods (settings)
+## Other methods and settings
 
 ### Chains
 
