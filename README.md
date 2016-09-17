@@ -79,11 +79,11 @@ Returns the time of the last tap in milliseconds since the program started.
 ArduinoTapTempo calls groups of taps 'chains', and calculates the tempo by averaging a number of taps in a chain. Chains are active for a short while after each most recent tap, and while they are active they will count new taps as part of the current chain and average the timing of new taps together with previous taps. The chain is reset if a tap occurs once the chain is no longer active, and the tempo calculation will then be based off 2 or more taps in the new chain.
 
 ```c++
-bool isChainActive(unsigned long ms /*optional*/);
+bool isChainActive();
 ```
 Returns true if the current tap chain is still accepting new taps to fine tune the tempo.
 ```c++
-void resetTapChain(unsigned long ms /*optional*/);
+void resetTapChain();
 ```
 Resets the current chain of taps and sets the start of the bar to the current time. This is called internally when a tap occurs and the current chain is no longer active
 ```c++
