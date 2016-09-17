@@ -7,6 +7,7 @@ const int BUTTON_PIN = 5;
 // make an ArduinoTapTempo object
 ArduinoTapTempo tapTempo;
 
+
 void setup() {
   // begin serial so we can see the state of the tempo object through the serial monitor
   Serial.begin(9600);
@@ -20,9 +21,16 @@ void loop() {
   // get the state of the button
   boolean buttonDown = digitalRead(BUTTON_PIN) == LOW;
   
-  // update the ArduinoTapTempo object
+  // update ArduinoTapTempo
   tapTempo.update(buttonDown);
 
+  Serial.print("bpm: ");
+  Serial.println(tapTempo.getBPM());
+
+  // uncomment the block below to demo many of ArduinoTapTempo's methods
+  // note that Serial.print() is not a fast operation, and using it decreases the accuracy of the the tap timing
+  
+  /*
   Serial.print("len:");
   Serial.print(tapTempo.getBeatLength());
   Serial.print(",\tbpm: ");
@@ -35,6 +43,5 @@ void loop() {
   Serial.print(tapTempo.beatProgress());
   Serial.print(",\tbeat: ");
   Serial.println(tapTempo.onBeat() ? "beat" : "    ");
-  
-  delay(1);
+  */
 }

@@ -1,6 +1,6 @@
 /*
  * ArduinoTapTempo.cpp
- * An Arduino library that times consecutive button presses to calculate Beats Per Minute. Corrects for missed beats and can reset phase with single taps. 
+ * An Arduino library that times consecutive button presses to calculate Beats Per Minute. Corrects for missed beats and resets phase with single taps. 
  *
  * Copyright (c) 2016 Damien Clarke
  * 
@@ -40,7 +40,7 @@ void ArduinoTapTempo::setSkippedTapThresholdHigh(float threshold)
 
 float ArduinoTapTempo::getBPM()
 {
-  return 60000 / beatLengthMS;
+  return 60000.0 / beatLengthMS;
 }
 
 bool ArduinoTapTempo::onBeat()
@@ -55,7 +55,7 @@ bool ArduinoTapTempo::isChainActive()
 
 bool ArduinoTapTempo::isChainActive(unsigned long ms)
 {
-  return lastTapMS + millisUntilChainReset > ms && lastTapMS + (beatLengthMS * beatsUntilChainReset) > ms;
+  return lastTapMS + maxBeatLengthMS > ms && lastTapMS + (beatLengthMS * beatsUntilChainReset) > ms;
 }
 
 float ArduinoTapTempo::beatProgress()
@@ -87,19 +87,20 @@ void ArduinoTapTempo::tap(unsigned long ms)
 
 void ArduinoTapTempo::addTapToChain(unsigned long ms)
 {
-  tapsInChain++;
-  if(tapsInChain == 1) {
-    lastTapMS = ms;
-    return;
-  }
-
   // get time since last tap
   unsigned long duration = ms - lastTapMS;
+
+  // reset beat to occur right now
   lastTapMS = ms;
+
+  tapsInChain++;
+  if(tapsInChain == 1)
+    return;
   
   // detect if last duration was approximately twice the length of the current beat length
   // and if so then we've simply missed a beat and can halve the duration to get the real beat length
-  if(tapsInChain > 2
+  if(skippedTapDetection
+     && tapsInChain > 2
      && !lastTapSkipped
      && duration > beatLengthMS * skippedTapThresholdLow
      && duration < beatLengthMS * skippedTapThresholdHigh)
@@ -142,11 +143,15 @@ unsigned long ArduinoTapTempo::getAverageTapDuration()
   if(amount > totalTapValues)
     amount = totalTapValues;
   
-  int runningTotal = 0;
+  unsigned long runningTotalMS = 0;
   for(int i = 0; i < amount; i++) {
-    runningTotal += tapDurations[i];
+    runningTotalMS += tapDurations[i];
   }
-  return runningTotal / amount;
+  unsigned long avgTapDurationMS = runningTotalMS / amount;
+  if(avgTapDurationMS < minBeatLengthMS) {
+    return minBeatLengthMS;
+  }
+  return avgTapDurationMS;
 }
 
 void ArduinoTapTempo::setBeatsUntilChainReset(int beats)
