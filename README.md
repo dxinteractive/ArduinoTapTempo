@@ -4,6 +4,8 @@
 
 An Arduino library that times consecutive button presses to calculate a tempo. Corrects for missed beats and can reset phase with single taps.
 
+How do you use it? Just tap a button in time with some music. This'll work out the tempo and keep track of it internally. Single taps will reset the phase so the bar begins from the start again. Mutiple taps will average out and give you a more accurate tempo reading. If you miss a tap this will detect it and prevent a tempo change.
+
 ## How to install
 
 In the Arduino IDE, go to Sketch > Include libraries > Manage libraries, and search for ResponsiveAnalogInput. You can also just use the files directly from the src folder.
