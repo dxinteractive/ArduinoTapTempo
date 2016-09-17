@@ -1,4 +1,7 @@
 # ArduinoTapTempo
+
+![ArduinoTapTempo](http://damienclarke.me/content/2-code/8-arduino-tap-tempo/thumbnail.jpg)
+
 An Arduino library that times consecutive button presses to calculate a tempo. Corrects for missed beats and can reset phase with single taps.
 
 ## How to install
