@@ -38,12 +38,13 @@ class ArduinoTapTempo
     bool isChainActive(); // returns true if the current tap chain is still accepting new taps to fine tune the tempo
     bool isChainActive(unsigned long ms); // returns true if the current tap chain is still accepting new taps to fine tune the tempo
     float getBPM(); // returns the number of beats per minute
-    float setBPM(float bpm); // sets the number of beats per minute
+    void setBPM(float bpm); // sets the number of beats per minute
     float beatProgress(); // returns a float from 0.0 to 1.0 indicating the percent through the current beat
     void resetTapChain(); // resets the current chain of taps and sets the start of the bar to the current time
     void resetTapChain(unsigned long ms); // resets the current chain of taps and sets the start of the bar to the current time
 
     inline unsigned long getBeatLength() { return beatLengthMS; } // returns the length of the beat in milliseconds
+    void setBeatLength(unsigned long lengthMS); // sets the length of the beat in MS directly
     inline unsigned long getLastTapTime() { return lastTapMS; } // returns the time of the last tap in milliseconds since the program started
 
     void update(bool buttonDown); // call this each time you read your button state, accepts a boolean indicating if the button is down
