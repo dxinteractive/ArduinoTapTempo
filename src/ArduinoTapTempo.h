@@ -38,7 +38,7 @@ class ArduinoTapTempo
     bool isChainActive(); // returns true if the current tap chain is still accepting new taps to fine tune the tempo
     bool isChainActive(unsigned long ms); // returns true if the current tap chain is still accepting new taps to fine tune the tempo
     float getBPM(); // returns the number of beats per minute
-    float setBPM(float bpm); // sets the number of beats per minute
+    void setBPM(float bpm); // sets the number of beats per minute
     float beatProgress(); // returns a float from 0.0 to 1.0 indicating the percent through the current beat
     void resetTapChain(); // resets the current chain of taps and sets the start of the bar to the current time
     void resetTapChain(unsigned long ms); // resets the current chain of taps and sets the start of the bar to the current time
