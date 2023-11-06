@@ -43,7 +43,7 @@ float ArduinoTapTempo::getBPM()
   return 60000.0 / beatLengthMS;
 }
 
-float ArduinoTapTempo::setBPM(float bpm)
+void ArduinoTapTempo::setBPM(float bpm)
 {
   beatLengthMS = 60000 / bpm;
 }
