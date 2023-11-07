@@ -40,12 +40,12 @@ void ArduinoTapTempo::setSkippedTapThresholdHigh(float threshold)
 
 float ArduinoTapTempo::getBPM()
 {
-  return 60000.0 / beatLengthMS;
+  return 6000000.0 / beatLengthMS;
 }
 
 void ArduinoTapTempo::setBPM(float bpm)
 {
-  beatLengthMS = 60000 / bpm;
+  beatLengthMS = 60000 / bpm*100;
 }
 
 bool ArduinoTapTempo::onBeat()
